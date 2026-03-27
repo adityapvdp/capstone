@@ -10,11 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install Dependencies
-        run: pip install -r capstone/requirements.txt
+        run: pip install -r project/requirements.txt
       - name: Upload Dataset to Hugging Face Hub
         env:
           HF_TOKEN: ${{ secrets.HF_CAPSTONE_TOKEN }}
-        run: python capstone/model_building/data_register.py
+        run: python project/model_building/data_register.py
 
   data-prep:
     needs: register-dataset
@@ -22,11 +22,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install Dependencies
-        run: pip install -r capstone/requirements.txt
+        run: pip install -r project/requirements.txt
       - name: Run Data Preparation
         env:
           HF_TOKEN: ${{ secrets.HF_CAPSTONE_TOKEN }}
-        run: python capstone/model_building/prep.py
+        run: python project/model_building/prep.py
 
 
   model-traning:
@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install Dependencies
-        run: pip install -r capstone/requirements.txt
+        run: pip install -r project/requirements.txt
       - name: Start MLflow Server
         run: |
           nohup mlflow ui --host 0.0.0.0 --port 5000 &  # Run MLflow UI in the background
@@ -43,7 +43,7 @@ jobs:
       - name: Model Building
         env:
           HF_TOKEN: ${{ secrets.HF_CAPSTONE_TOKEN }}
-        run: python capstone/model_building/train.py
+        run: python project/model_building/train.py
 
   deploy-hosting:
     runs-on: ubuntu-latest
@@ -51,8 +51,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install Dependencies
-        run: pip install -r capstone/requirements.txt
+        run: pip install -r project/requirements.txt
       - name: Push files to Frontend Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_CAPSTONE_TOKEN }}
-        run: python capstone/hosting/hosting.py
+        run: python project/hosting/hosting.py
